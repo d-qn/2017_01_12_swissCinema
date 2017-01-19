@@ -1,0 +1,151 @@
+---
+title: ""
+author: "Duc-Quang Nguyen | swissinfo.ch"
+date: " 2016"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    theme: simplex
+---
+
+## Data
+
+* [PX Offre cinématographique et demande selon région linguistique, type de projection (2D/3D), version de langue et genre](https://www.pxweb.bfs.admin.ch/Selection.aspx?px_language=fr&px_db=px-x-1602010000_200&px_tableid=px-x-1602010000_200\px-x-1602010000_200.px&px_type=PX)
+
+```{r setup, include=FALSE}
+
+px.file <- "data/px-x-1602010000_200.px"
+
+library(readr)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+library(countrycode)
+library(ggplot2)
+library(scales)
+library(swiMap)
+library(swiTheme)
+library(forcats)
+
+### Getting data in packages
+library(pxR)
+
+### Interactive 
+library(htmltools)
+library(shiny)
+library(swiRcharts)
+
+### Misc stuff
+#require(classInt)
+#require(viridis)
+```
+
+
+```{r load & translate, include = F}
+px.read <- read.px(px.file)
+data <- px.read$DATA[[1]]
+
+# get the French terms
+en <- px.read$VALUES.en.
+de <- px.read$VALUES
+
+colnames(data)[-ncol(data)] <- rev(names(en))
+
+## helper to translate PX file
+translate <- function(colname = 'Result.variable', data, en, de) {
+  # find which colname idx
+  i <- which(names(en) == colname)
+  # split single string to a string vector
+  translations <- unlist(strsplit(en[[i]], '", ?"'))
+  stopifnot(length(translations) == length(de[[i]]))
+  
+  # match each term of the data to the levels
+  idx <- match(data[[colname]], de[[i]])
+  stopifnot(all(!is.na(idx)))
+  
+  factor(translations[idx])
+}
+# apply translation
+for(coln in colnames(data)[-ncol(data)]) {
+  data[,coln]<- translate(coln, data, en, de)
+}
+data.all <- data
+```
+
+```{r wrangle, include = F}
+data %<>% filter(`Language.region` == "Total Switzerland" , 
+                `All.films...new.releases` == "All films released") %>%
+  select(-`Language.region`, - `All.films...new.releases`)
+
+# get parent country of origin region
+idx.reg <- grep(" - total", data$`Country.of.origin`)
+idx.reg2 <- findInterval(1:nrow(data), idx.reg)
+data[idx.reg2 != 0, 'region'] <- data[idx.reg[idx.reg2], 'Country.of.origin']
+
+# sum data for all years
+data %<>% group_by(`Result.variable`, `Language.version...screening.type...genre`, `Country.of.origin`, region) %>% 
+  dplyr::summarise(value = sum(value)) %>% ungroup()
+
+# add a column with the total films/admissions/entry by country
+totals <- data %>% group_by(`Country.of.origin`, `Result.variable`) %>% 
+  dplyr::summarise(
+    tot_byCountry_film = value[which(`Language.version...screening.type...genre` == "Total of films")]
+    ) %>%
+  ungroup()
+
+# remove the rows totals, but keep it in grand.totals for check
+grand.totals <- data %>% 
+  filter(`Language.version...screening.type...genre` == "Total of films", `Country.of.origin` == "Country of origin - Total" ) %>%
+  select(-`Language.version...screening.type...genre`, -`Country.of.origin`) %>%
+  dplyr::rename(tot = value)
+data %<>% filter(`Language.version...screening.type...genre` != "Total of films", `Country.of.origin` != "Country of origin - Total" )
+# add column total
+data <-  left_join(data, totals)
+
+## explore the top country of origin
+ori.top <- data %>% filter(`Result.variable` == "Admissions") %>% 
+  group_by(`Country.of.origin`) %>% dplyr::summarise(totAdm = sum(value)) %>%
+  ungroup() %>% arrange(desc(totAdm))
+
+# quick exploration of the top countries
+#data[grep(" - total", data$`Country.of.origin`),] %>% select( Country.of.origin) %>% unlist(use.names = F) %>% unique()
+#grepl("......", data$`Country.of.origin`, fixed = T)
+
+# Create a data.frame with all countries, their geo regions
+countries <- data[grepl("......", data$`Country.of.origin`, fixed = T), 'Country.of.origin'] %>% unlist(use.names = F) %>% unique() %>% as.character()
+countries <- data.frame(country = gsub("......", "", countries, fixed = T), country.original = countries, iso2c = countrycode(countries, "country.name", "iso2c"))
+#countries$region <- countrycode(countries$iso2c, "iso2c", "region")
+# hack for Taiwan and Ex-yougoslavia
+countries$region[which(countries$country == "Taiwan (Chinese Taipei)")] <- 'Eastern Asia'
+countries$region[which(countries$country == "Yugoslavia")] <- 'Southern Europe'
+
+data <- data[grepl("......", data$`Country.of.origin`, fixed = T),]
+
+# check !!
+check.tot <- data %>% group_by(`Result.variable`, `Country.of.origin`) %>% 
+  dplyr::summarise(tot_byCountry_film = tot_byCountry_film[1]) %>% ungroup() %>%
+  group_by(`Result.variable`) %>% dplyr::summarise(tot = sum(tot_byCountry_film))
+
+stopifnot(identical(check.tot, grand.totals))
+
+## map the iso2 and clean up
+idx <- match(data$`Country.of.origin`, countries$country.original)
+
+data <- cbind(data, countries[idx,c('iso2c', 'country', 'region')]) %>%
+  select(-`Country.of.origin`) %>% dplyr::rename(variable = `Result.variable`, type = `Language.version...screening.type...genre`)
+```
+
+```{r explore, include=FALSE}
+topc <- data %>% group_by(country, variable) %>%
+  dplyr::summarise(tot = tot_byCountry_film[1]) %>%
+  ungroup() %>% arrange(desc(tot))
+topc %>% filter(variable == "Admissions")
+topc %>% filter(variable == "Number of screenings")
+topc %>% filter(variable == "Number of films")
+
+data %>% group_by(region, variable) %>%
+  dplyr::summarise(tot = sum(tot_byCountry_film)) %>%
+  ungroup() %>% arrange(desc(tot))
+
+```
