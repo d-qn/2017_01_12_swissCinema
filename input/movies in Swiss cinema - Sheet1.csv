@@ -1,0 +1,27 @@
+code,EN,FR,DE,IT,PT,AR,RU,ES,JA,ZH
+title,Film in ,,,,,,,,,
+descr,Movies shown in Swiss cinemas in 2014 and 2015. By movies' country of origin,,,,,,,,,
+h3.a,Number of ,,,,,,,,,
+h3.b,Share of admissions for ,,,,,,,,,
+Switzerland,Switzerland,,,,,,,,,
+United States,United States,,,,,,,,,
+- EU 28 - total,EU 28,,,,,,,,,
+- Asia - total,Asia,,,,,,,,,
+- Latin America - total,Latin America,,,,,,,,,
+- Other countries - total,Other countries,,,,,,,,,
+France,France,,,,,,,,,
+Germany,Germany,,,,,,,,,
+United Kingdom,United Kingdom,,,,,,,,,
+nFilms,Movies,,,,,,,,,
+screeningByFilm,Screening per movie,,,,,,,,,
+admissionByScreening,Admissions per screening,,,,,,,,,
+share_3d,3D movies,,,,,,,,,
+share_dubbed,dubbed movies,,,,,,,,,
+share_ani,animated movies,,,,,,,,,
+share_doc,documentaries,,,,,,,,,
+share_fic,fiction movies,,,,,,,,,
+source,Source,source,Quelle,Fonte,fonte,المصدر,Источник,Fuente,出典,来源
+source.name,Federal Statistical Office,,,,,,,,,
+code,Code,code,Code,Codice,código,الرمز,Код,código,コード,代码
+title.font,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,PingFang TC Regular,PingFang TC Regular
+base.font,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,PingFang TC Thin,PingFang TC Thin

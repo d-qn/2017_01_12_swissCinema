@@ -10,11 +10,29 @@ output:
 ---
 
 ## Data
-
 * [PX Offre cinématographique et demande selon région linguistique, type de projection (2D/3D), version de langue et genre](https://www.pxweb.bfs.admin.ch/Selection.aspx?px_language=fr&px_db=px-x-1602010000_200&px_tableid=px-x-1602010000_200\px-x-1602010000_200.px&px_type=PX)
 
 ```{r setup, include=FALSE}
+translation.file <- "input/movies in Swiss cinema - Sheet1.csv"
 
+country.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "Switzerland", "United States", "France", "Germany", "United Kingdom")
+country.check.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "......Switzerland", "......United States")
+
+groups <- data.frame(
+  key = c("- Asia - total", "- EU 28 - total", "- Latin America - total", "- Other countries - total", "France", "Germany", "Switzerland", "United Kingdom", "United States"),
+  name = c("Asia", "EU 28", "Latin America", "Other countries", "France", "Germany", "Switzerland", "United Kingdom", "United States"),  
+  order = c(4, 3, 5, 6, 7, 8, 1, 9, 2),
+  color = c("#ac673e", "#333366", "#666633", "#aa8959", "#336666", "#448888", "#ab3d3f", "#55aaaa", "#3a9736")
+)
+groups <- groups[order(groups$order),]
+
+vars.ordered <- c(
+  'nFilms', 'screeningByFilm', 'admissionByScreening',
+  'share_doc', 'share_fic', 'share_ani', 
+  'share_dubbed', 'share_3d'
+)
+names(vars.ordered) <- c('1', '1', '1', '2', '2', '2', '2', '2')
+  
 px.file <- "data/px-x-1602010000_200.px"
 
 library(readr)
@@ -26,7 +44,7 @@ library(ggplot2)
 library(scales)
 library(swiMap)
 library(swiTheme)
-library(forcats)
+library(ggiraph)
 
 ### Getting data in packages
 library(pxR)
@@ -43,6 +61,9 @@ library(swiRcharts)
 
 
 ```{r load & translate, include = F}
+txt <- loadTranslation(translation.file)
+
+
 px.read <- read.px(px.file)
 data <- px.read$DATA[[1]]
 
@@ -97,16 +118,22 @@ totals <- data %>% group_by(`Country.of.origin`, `Result.variable`) %>%
 # remove the rows totals, but keep it in grand.totals for check
 grand.totals <- data %>% 
   filter(`Language.version...screening.type...genre` == "Total of films", `Country.of.origin` == "Country of origin - Total" ) %>%
-  select(-`Language.version...screening.type...genre`, -`Country.of.origin`) %>%
+  select(-`Language.version...screening.type...genre`, -`Country.of.origin`, -region) %>%
   dplyr::rename(tot = value)
 data %<>% filter(`Language.version...screening.type...genre` != "Total of films", `Country.of.origin` != "Country of origin - Total" )
 # add column total
 data <-  left_join(data, totals)
 
+
 ## explore the top country of origin
 ori.top <- data %>% filter(`Result.variable` == "Admissions") %>% 
   group_by(`Country.of.origin`) %>% dplyr::summarise(totAdm = sum(value)) %>%
   ungroup() %>% arrange(desc(totAdm))
+
+reg.top <- data %>% filter(`Result.variable` == "Admissions") %>% 
+  group_by(`region`) %>% dplyr::summarise(totAdm = sum(value)) %>%
+  ungroup() %>% arrange(desc(totAdm))
+
 
 # quick exploration of the top countries
 #data[grep(" - total", data$`Country.of.origin`),] %>% select( Country.of.origin) %>% unlist(use.names = F) %>% unique()
@@ -115,37 +142,106 @@ ori.top <- data %>% filter(`Result.variable` == "Admissions") %>%
 # Create a data.frame with all countries, their geo regions
 countries <- data[grepl("......", data$`Country.of.origin`, fixed = T), 'Country.of.origin'] %>% unlist(use.names = F) %>% unique() %>% as.character()
 countries <- data.frame(country = gsub("......", "", countries, fixed = T), country.original = countries, iso2c = countrycode(countries, "country.name", "iso2c"))
-#countries$region <- countrycode(countries$iso2c, "iso2c", "region")
-# hack for Taiwan and Ex-yougoslavia
-countries$region[which(countries$country == "Taiwan (Chinese Taipei)")] <- 'Eastern Asia'
-countries$region[which(countries$country == "Yugoslavia")] <- 'Southern Europe'
-
-data <- data[grepl("......", data$`Country.of.origin`, fixed = T),]
-
-# check !!
-check.tot <- data %>% group_by(`Result.variable`, `Country.of.origin`) %>% 
-  dplyr::summarise(tot_byCountry_film = tot_byCountry_film[1]) %>% ungroup() %>%
-  group_by(`Result.variable`) %>% dplyr::summarise(tot = sum(tot_byCountry_film))
-
-stopifnot(identical(check.tot, grand.totals))
 
 ## map the iso2 and clean up
 idx <- match(data$`Country.of.origin`, countries$country.original)
+data <- cbind(data, countries[idx,c('iso2c', 'country')]) %>% 
+  dplyr::rename(variable = `Result.variable`, type = `Language.version...screening.type...genre`, countryOri = `Country.of.origin`)
 
-data <- cbind(data, countries[idx,c('iso2c', 'country', 'region')]) %>%
-  select(-`Country.of.origin`) %>% dplyr::rename(variable = `Result.variable`, type = `Language.version...screening.type...genre`)
+data$group <- ifelse(data$country %in% country.sub, as.character(data$country), as.character(data$region))
+
+## TODO remove country from region values.....
+
+## Filter by country or region subset
+dat <- data[data$countryOri %in% country.sub | data$country %in% country.sub,]
+
+#### check !!
+check.tot <- dat %>% filter(countryOri %in% country.check.sub) %>% group_by(variable) %>% 
+  dplyr::summarise(tot = sum(unique(tot_byCountry_film)))
+stopifnot(identical(check.tot, grand.totals %>% dplyr::rename(variable = `Result.variable`)))
+
+# more cleanup
+dat %<>% select(-region, -iso2c, -country)
 ```
 
 ```{r explore, include=FALSE}
-topc <- data %>% group_by(country, variable) %>%
-  dplyr::summarise(tot = tot_byCountry_film[1]) %>%
-  ungroup() %>% arrange(desc(tot))
-topc %>% filter(variable == "Admissions")
-topc %>% filter(variable == "Number of screenings")
-topc %>% filter(variable == "Number of films")
+## Get overal numbers
+# Number of movies by group, Number of projections,  Number of admissions
+dd <- dat %>% group_by(variable, group) %>%
+  dplyr::summarise(value = tot_byCountry_film[1] ) %>% 
+  ungroup() %>% tidyr::spread(variable, value) %>%
+  dplyr::rename(nAdmissions = Admissions, nFilms = `Number of films`, nScreenings = `Number of screenings`)
 
-data %>% group_by(region, variable) %>%
-  dplyr::summarise(tot = sum(tot_byCountry_film)) %>%
-  ungroup() %>% arrange(desc(tot))
+# Number of movies: animations, doc, fiction by number of movies
+dd2 <- dat %>% filter(variable == "Number of films") %>% group_by(group) %>% 
+   dplyr::summarise(ani = value[type == 'Animated films'], doc =  value[type == 'Documentaries'], fic =  value[type == 'Feature films']) %>% 
+  ungroup()
+
+# Admissions: dubbed, 3D
+dd3 <- dat %>% filter(variable == "Admissions") %>% group_by(group) %>% 
+   dplyr::summarise(d3 = value[type == '3D screenings'], dubbed = value[type == 'Dubbed version']) %>% 
+  ungroup()
+
+# join
+dd <- left_join(left_join(dd, dd2), dd3)
+
+## compute share & average
+dd$screeningByFilm <- dd$nScreenings / dd$nFilms
+dd$admissionByScreening <- dd$nAdmissions / dd$nScreenings
+
+dd$share_3d     <- dd$d3 / dd$nAdmissions 
+dd$share_dubbed <- dd$dubbed / dd$nAdmissions
+
+dd$share_ani    <- dd$ani / dd$nFilms
+dd$share_doc    <- dd$doc / dd$nFilms
+dd$share_fic    <- dd$fic / dd$nFilms
+
+# get colors and short names
+
+```
+
+```{r plot}
+# make data long and drop some columns
+ddd <- dd %>% select(-nAdmissions, -nScreenings, -ani, -doc, -fic, -d3, -dubbed)  %>% 
+  tidyr::gather(var, value, -group)
+
+ddd <- cbind(ddd, groups[match(ddd$group, groups$key),c('name', 'color')])
+ddd$name <- factor(ddd$name, levels = as.character(groups$name))
+
+
+myTheme <- function(base_family, title_family) {
+  swi_theme(base_family = base_family, title_family = title_family) + 
+    theme(
+      #panel.ontop = TRUE,
+      panel.grid.major.y=element_line(color="black", linetype="dotted", size=0.2),
+      axis.line.x=element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      panel.background = element_rect(fill = "#efe9e0", color = NA),
+      plot.background = element_rect(fill = "#efe9e0", color = NA),
+      strip.text = element_text(size = 25, hjust = 0)
+    ) 
+}
+
+lang <- 'EN'
+
+# translations
+ee <- ddd
+ee$name <- txt[ee$group, lang]
+ee$name <- factor(ee$name, levels = txt[as.character(groups$key), lang])
+ee$varName <- txt[ee$var, lang]
+ee$varName <- factor(ee$varName, levels = txt[vars.ordered, lang])
+ee$gr <- as.numeric(names(vars.ordered)[match(ee$var, vars.ordered)])
+  
+gp <- ggplot(data = ee %>% filter(gr == 1), aes(name, value, fill = color)) + 
+  geom_bar_interactive(stat = "identity") + 
+  facet_wrap(~ varName, scales = "free_y", ncol = 1) +  
+  geom_text(data= filter(ee, var %in% c("nFilms", "admissionByScreening")), aes(label=name), position=position_fill(), vjust=-0.25, colour = "white", size = 2.5) + 
+  scale_fill_identity() + 
+  scale_x_discrete(name = "") +  
+  myTheme(base_family = txt['base.font', lang], title_family = txt["title.font", lang])
+  
+
+
 
 ```
