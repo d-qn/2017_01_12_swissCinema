@@ -1,18 +1,15 @@
 code,EN,FR,DE,IT,PT,AR,RU,ES,JA,ZH
-title,Film in ,,,,,,,,,
-descr,Movies shown in Swiss cinemas in 2014 and 2015. By movies' country of origin,,,,,,,,,
-h3.a,Number of ,,,,,,,,,
-h3.b,Share of admissions for ,,,,,,,,,
+title,What type of movies do the Swiss like?,,,,,,,,,
+descr,Figures by movies' country or region of origin shown in Swiss cinemas in 2014 and 2015 *,,,,,,,,,
+footer,"* Excluding film festivals, open-air cinema, cinema clubs and adult cinemas figures. The three main countries of origin for EU-28 movies are France, Germany and United Kingdom",,,,,,,,,
+h3.b,Share out of all admissions by movies' country or region of origin ,,,,,,,,,
 Switzerland,Switzerland,,,,,,,,,
 United States,United States,,,,,,,,,
 - EU 28 - total,EU 28,,,,,,,,,
 - Asia - total,Asia,,,,,,,,,
 - Latin America - total,Latin America,,,,,,,,,
 - Other countries - total,Other countries,,,,,,,,,
-France,France,,,,,,,,,
-Germany,Germany,,,,,,,,,
-United Kingdom,United Kingdom,,,,,,,,,
-nFilms,Movies,,,,,,,,,
+nFilms,Movies from,,,,,,,,,
 screeningByFilm,Screening per movie,,,,,,,,,
 admissionByScreening,Admissions per screening,,,,,,,,,
 share_3d,3D movies,,,,,,,,,
@@ -20,8 +17,12 @@ share_dubbed,dubbed movies,,,,,,,,,
 share_ani,animated movies,,,,,,,,,
 share_doc,documentaries,,,,,,,,,
 share_fic,fiction movies,,,,,,,,,
+annot.nFilms,"A large diversity of European movies are shown in Swiss cinemas. Movies from the EU-28 accounts for 45%, Swiss films 16%",,,,,,,,,
+annot.screeningByFilm,"... but in terms of screening and admissions, american films are far ahead. An american movie is on average shown more than 700 times in cinemas.",,,,,,,,,
+annot.share_doc,Documentary is a cinematographical genre with a long tradition in Switzerland. More than 60% of the admissions for helvetic movies are for documentaries,,,,,,,,,
+annot.share_ani,"If in absolute terms, admissions for animated films are largely dominated by american productions. A fifth of the admissions for asian movies are for Japanimations",,,,,,,,,
+annot.share_dubbed,"Movie goers largely watched dubbed American movies. But for movies from other countries, more than 80% of the admissions are for original subtitled films  ",,,,,,,,,
 source,Source,source,Quelle,Fonte,fonte,المصدر,Источник,Fuente,出典,来源
 source.name,Federal Statistical Office,,,,,,,,,
 code,Code,code,Code,Codice,código,الرمز,Код,código,コード,代码
-title.font,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,OpenSans-CondensedBold,PingFang TC Regular,PingFang TC Regular
-base.font,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,PingFang TC Thin,PingFang TC Thin
+base.font,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,OpenSans-CondensedLight,PingFang TC Thin,PingFang TC Thin

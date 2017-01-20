@@ -131,7 +131,364 @@ $(document).ready(function () {
 <ul>
 <li><a href="https://www.pxweb.bfs.admin.ch/Selection.aspx?px_language=fr&amp;px_db=px-x-1602010000_200&amp;px_tableid=px-x-1602010000_200\px-x-1602010000_200.px&amp;px_type=PX">PX Offre cinématographique et demande selon région linguistique, type de projection (2D/3D), version de langue et genre</a></li>
 </ul>
-<pre class="r"><code>#data %&gt;% group</code></pre>
+<pre class="r"><code># make data long and drop some columns
+ddd &lt;- dd %&gt;% select(-nAdmissions, -nScreenings, -ani, -doc, -fic, -d3, -dubbed)  %&gt;% 
+  tidyr::gather(var, value, -group)
+
+ddd &lt;- cbind(ddd, groups[match(ddd$group, groups$key),c('name', 'color')])
+ddd$name &lt;- factor(ddd$name, levels = as.character(groups$name))
+
+# share of EU 28 movies 
+ddd %&gt;% filter(var == &quot;nFilms&quot;) %&gt;% mutate(share = (value / sum(value)* 100))</code></pre>
+<pre><code>##                       group    var value            name   color     share
+## 1            - Asia - total nFilms   162            Asia #ac673e  4.825737
+## 2           - EU 28 - total nFilms  1518           EU 28 #333366 45.218945
+## 3   - Latin America - total nFilms    74   Latin America #666633  2.204349
+## 4 - Other countries - total nFilms   179 Other countries #336666  5.332142
+## 5               Switzerland nFilms   524     Switzerland #ab3d3f 15.609175
+## 6             United States nFilms   900   United States #3a9736 26.809651</code></pre>
+<pre class="r"><code># top animation countries for admissions
+data %&gt;% filter(variable == &quot;Admissions&quot;, type == &quot;Animated films&quot;) %&gt;% arrange(desc(value))</code></pre>
+<pre><code>##      variable           type                    countryOri
+## 1  Admissions Animated films           ......United States
+## 2  Admissions Animated films               - EU 28 - total
+## 3  Admissions Animated films                  ......France
+## 4  Admissions Animated films          ......United Kingdom
+## 5  Admissions Animated films     - Other countries - total
+## 6  Admissions Animated films               ......Australia
+## 7  Admissions Animated films                - Asia - total
+## 8  Admissions Animated films                   ......Japan
+## 9  Admissions Animated films                 ......Germany
+## 10 Admissions Animated films                 ......Belgium
+## 11 Admissions Animated films                  ......Canada
+## 12 Admissions Animated films                 ......Ireland
+## 13 Admissions Animated films                 ......Finland
+## 14 Admissions Animated films       - Latin America - total
+## 15 Admissions Animated films            ......South Africa
+## 16 Admissions Animated films                 ......Uruguay
+## 17 Admissions Animated films          ......Czech Republic
+## 18 Admissions Animated films                  ......Sweden
+## 19 Admissions Animated films                  ......Brazil
+## 20 Admissions Animated films                   ......Spain
+## 21 Admissions Animated films                 ......Denmark
+## 22 Admissions Animated films                   ......Italy
+## 23 Admissions Animated films                ......Colombia
+## 24 Admissions Animated films             ......Afghanistan
+## 25 Admissions Animated films                 ......Albania
+## 26 Admissions Animated films                 ......Algeria
+## 27 Admissions Animated films               ......Argentina
+## 28 Admissions Animated films                 ......Armenia
+## 29 Admissions Animated films                 ......Austria
+## 30 Admissions Animated films              ......Bangladesh
+## 31 Admissions Animated films                  ......Bhutan
+## 32 Admissions Animated films                 ......Bolivia
+## 33 Admissions Animated films  ......Bosnia and Herzegovina
+## 34 Admissions Animated films                ......Bulgaria
+## 35 Admissions Animated films            ......Burkina Faso
+## 36 Admissions Animated films                   ......Chile
+## 37 Admissions Animated films                   ......China
+## 38 Admissions Animated films        ......Congo (Kinshasa)
+## 39 Admissions Animated films                 ......Croatia
+## 40 Admissions Animated films                    ......Cuba
+## 41 Admissions Animated films                  ......Cyprus
+## 42 Admissions Animated films                 ......Ecuador
+## 43 Admissions Animated films                   ......Egypt
+## 44 Admissions Animated films                 ......Estonia
+## 45 Admissions Animated films                   ......Gabon
+## 46 Admissions Animated films                 ......Georgia
+## 47 Admissions Animated films                  ......Greece
+## 48 Admissions Animated films           ......Guinea-Bissau
+## 49 Admissions Animated films                   ......Haiti
+## 50 Admissions Animated films               ......Hong Kong
+## 51 Admissions Animated films                 ......Hungary
+## 52 Admissions Animated films                 ......Iceland
+## 53 Admissions Animated films                   ......India
+## 54 Admissions Animated films                    ......Iran
+## 55 Admissions Animated films                    ......Iraq
+## 56 Admissions Animated films                  ......Israel
+## 57 Admissions Animated films                 ......Jamaica
+## 58 Admissions Animated films              ......Kazakhstan
+## 59 Admissions Animated films              ......Kyrgyzstan
+## 60 Admissions Animated films                  ......Latvia
+## 61 Admissions Animated films               ......Lithuania
+## 62 Admissions Animated films              ......Luxembourg
+## 63 Admissions Animated films                    ......Mali
+## 64 Admissions Animated films                   ......Malta
+## 65 Admissions Animated films                  ......Mexico
+## 66 Admissions Animated films                   ......Nepal
+## 67 Admissions Animated films             ......Netherlands
+## 68 Admissions Animated films             ......New Zealand
+## 69 Admissions Animated films                  ......Norway
+## 70 Admissions Animated films                  ......Others
+## 71 Admissions Animated films                ......Pakistan
+## 72 Admissions Animated films               ......Palestine
+## 73 Admissions Animated films                    ......Peru
+## 74 Admissions Animated films             ......Philippines
+## 75 Admissions Animated films                  ......Poland
+## 76 Admissions Animated films                ......Portugal
+## 77 Admissions Animated films                 ......Romania
+## 78 Admissions Animated films                  ......Russia
+## 79 Admissions Animated films                 ......Senegal
+## 80 Admissions Animated films                  ......Serbia
+## 81 Admissions Animated films               ......Singapore
+## 82 Admissions Animated films                ......Slovakia
+## 83 Admissions Animated films                ......Slovenia
+## 84 Admissions Animated films             ......South Korea
+## 85 Admissions Animated films             ......Switzerland
+## 86 Admissions Animated films                   ......Syria
+## 87 Admissions Animated films ......Taiwan (Chinese Taipei)
+## 88 Admissions Animated films              ......Tajikistan
+## 89 Admissions Animated films                ......Thailand
+## 90 Admissions Animated films                 ......Tunisia
+## 91 Admissions Animated films                  ......Turkey
+## 92 Admissions Animated films              ......Uzbekistan
+## 93 Admissions Animated films               ......Venezuela
+## 94 Admissions Animated films                 ......Vietnam
+## 95 Admissions Animated films              ......Yugoslavia
+## 96 Admissions Animated films                ......Zimbabwe
+##                       region   value tot_byCountry_film iso2c
+## 1                       &lt;NA&gt; 2871903           17439788    US
+## 2            - EU 28 - total  488774            7377743  &lt;NA&gt;
+## 3            - EU 28 - total  245793            3446696    FR
+## 4            - EU 28 - total  165041            1071926    GB
+## 5  - Other countries - total   84766             710428  &lt;NA&gt;
+## 6  - Other countries - total   56984             222079    AU
+## 7             - Asia - total   38863             288179  &lt;NA&gt;
+## 8             - Asia - total   38863              90741    JP
+## 9            - EU 28 - total   38513            2149452    DE
+## 10           - EU 28 - total   31002              86355    BE
+## 11 - Other countries - total   27224             117828    CA
+## 12           - EU 28 - total    6019              26433    IE
+## 13           - EU 28 - total    1400              14768    FI
+## 14   - Latin America - total     694             127935  &lt;NA&gt;
+## 15 - Other countries - total     558                683    ZA
+## 16   - Latin America - total     436                944    UY
+## 17           - EU 28 - total     393                983    CZ
+## 18           - EU 28 - total     386             170740    SE
+## 19   - Latin America - total     253              22844    BR
+## 20           - EU 28 - total     127              66557    ES
+## 21           - EU 28 - total      52              48569    DK
+## 22           - EU 28 - total      48             215599    IT
+## 23   - Latin America - total       5                666    CO
+## 24            - Asia - total       0                  0    AF
+## 25 - Other countries - total       0                  0    AL
+## 26 - Other countries - total       0                  0    DZ
+## 27   - Latin America - total       0              64827    AR
+## 28            - Asia - total       0                  0    AM
+## 29           - EU 28 - total       0              28448    AT
+## 30            - Asia - total       0                  0    BD
+## 31            - Asia - total       0                  0    BT
+## 32   - Latin America - total       0                  0    BO
+## 33 - Other countries - total       0                216    BA
+## 34           - EU 28 - total       0                  0    BG
+## 35 - Other countries - total       0                  0    BF
+## 36   - Latin America - total       0               1568    CL
+## 37            - Asia - total       0              48422    CN
+## 38 - Other countries - total       0                 82    CD
+## 39           - EU 28 - total       0               1598    HR
+## 40   - Latin America - total       0              23267    CU
+## 41           - EU 28 - total       0                  0    CY
+## 42   - Latin America - total       0                  7    EC
+## 43 - Other countries - total       0                 51    EG
+## 44           - EU 28 - total       0                  0    EE
+## 45 - Other countries - total       0                  0    GA
+## 46            - Asia - total       0               4320    GE
+## 47           - EU 28 - total       0               1967    GR
+## 48 - Other countries - total       0                  0    GW
+## 49   - Latin America - total       0                  0    HT
+## 50            - Asia - total       0                174    HK
+## 51           - EU 28 - total       0               6372    HU
+## 52 - Other countries - total       0              23863    IS
+## 53            - Asia - total       0              34231    IN
+## 54            - Asia - total       0              59128    IR
+## 55            - Asia - total       0                103    IQ
+## 56            - Asia - total       0              22970    IL
+## 57   - Latin America - total       0                  0    JM
+## 58            - Asia - total       0                  0    KZ
+## 59            - Asia - total       0                  0    KG
+## 60           - EU 28 - total       0                  0    LV
+## 61           - EU 28 - total       0               1116    LT
+## 62           - EU 28 - total       0                  0    LU
+## 63 - Other countries - total       0                  0    ML
+## 64           - EU 28 - total       0                  0    MT
+## 65   - Latin America - total       0               7935    MX
+## 66            - Asia - total       0                  0    NP
+## 67           - EU 28 - total       0                 99    NL
+## 68 - Other countries - total       0               4865    NZ
+## 69 - Other countries - total       0              19113    NO
+## 70 - Other countries - total       0             248833  &lt;NA&gt;
+## 71            - Asia - total       0                192    PK
+## 72            - Asia - total       0               4075    PS
+## 73   - Latin America - total       0                900    PE
+## 74            - Asia - total       0                171    PH
+## 75           - EU 28 - total       0              30307    PL
+## 76           - EU 28 - total       0               7129    PT
+## 77           - EU 28 - total       0                706    RO
+## 78 - Other countries - total       0              25049    RU
+## 79 - Other countries - total       0                  0    SN
+## 80 - Other countries - total       0               2330    RS
+## 81            - Asia - total       0               3543    SG
+## 82           - EU 28 - total       0                  0    SK
+## 83           - EU 28 - total       0               1923    SI
+## 84            - Asia - total       0              19747    KR
+## 85                      &lt;NA&gt;       0            1404265    CH
+## 86            - Asia - total       0                  0    SY
+## 87            - Asia - total       0                362    TW
+## 88            - Asia - total       0                  0    TJ
+## 89            - Asia - total       0                  0    TH
+## 90 - Other countries - total       0                152    TN
+## 91 - Other countries - total       0              45220    TR
+## 92            - Asia - total       0                  0    UZ
+## 93   - Latin America - total       0               4977    VE
+## 94            - Asia - total       0                  0    VN
+## 95 - Other countries - total       0                 64    YU
+## 96 - Other countries - total       0                  0    ZW
+##                    country                     group
+## 1            United States             United States
+## 2                     &lt;NA&gt;           - EU 28 - total
+## 3                   France           - EU 28 - total
+## 4           United Kingdom           - EU 28 - total
+## 5                     &lt;NA&gt; - Other countries - total
+## 6                Australia - Other countries - total
+## 7                     &lt;NA&gt;            - Asia - total
+## 8                    Japan            - Asia - total
+## 9                  Germany           - EU 28 - total
+## 10                 Belgium           - EU 28 - total
+## 11                  Canada - Other countries - total
+## 12                 Ireland           - EU 28 - total
+## 13                 Finland           - EU 28 - total
+## 14                    &lt;NA&gt;   - Latin America - total
+## 15            South Africa - Other countries - total
+## 16                 Uruguay   - Latin America - total
+## 17          Czech Republic           - EU 28 - total
+## 18                  Sweden           - EU 28 - total
+## 19                  Brazil   - Latin America - total
+## 20                   Spain           - EU 28 - total
+## 21                 Denmark           - EU 28 - total
+## 22                   Italy           - EU 28 - total
+## 23                Colombia   - Latin America - total
+## 24             Afghanistan            - Asia - total
+## 25                 Albania - Other countries - total
+## 26                 Algeria - Other countries - total
+## 27               Argentina   - Latin America - total
+## 28                 Armenia            - Asia - total
+## 29                 Austria           - EU 28 - total
+## 30              Bangladesh            - Asia - total
+## 31                  Bhutan            - Asia - total
+## 32                 Bolivia   - Latin America - total
+## 33  Bosnia and Herzegovina - Other countries - total
+## 34                Bulgaria           - EU 28 - total
+## 35            Burkina Faso - Other countries - total
+## 36                   Chile   - Latin America - total
+## 37                   China            - Asia - total
+## 38        Congo (Kinshasa) - Other countries - total
+## 39                 Croatia           - EU 28 - total
+## 40                    Cuba   - Latin America - total
+## 41                  Cyprus           - EU 28 - total
+## 42                 Ecuador   - Latin America - total
+## 43                   Egypt - Other countries - total
+## 44                 Estonia           - EU 28 - total
+## 45                   Gabon - Other countries - total
+## 46                 Georgia            - Asia - total
+## 47                  Greece           - EU 28 - total
+## 48           Guinea-Bissau - Other countries - total
+## 49                   Haiti   - Latin America - total
+## 50               Hong Kong            - Asia - total
+## 51                 Hungary           - EU 28 - total
+## 52                 Iceland - Other countries - total
+## 53                   India            - Asia - total
+## 54                    Iran            - Asia - total
+## 55                    Iraq            - Asia - total
+## 56                  Israel            - Asia - total
+## 57                 Jamaica   - Latin America - total
+## 58              Kazakhstan            - Asia - total
+## 59              Kyrgyzstan            - Asia - total
+## 60                  Latvia           - EU 28 - total
+## 61               Lithuania           - EU 28 - total
+## 62              Luxembourg           - EU 28 - total
+## 63                    Mali - Other countries - total
+## 64                   Malta           - EU 28 - total
+## 65                  Mexico   - Latin America - total
+## 66                   Nepal            - Asia - total
+## 67             Netherlands           - EU 28 - total
+## 68             New Zealand - Other countries - total
+## 69                  Norway - Other countries - total
+## 70                  Others - Other countries - total
+## 71                Pakistan            - Asia - total
+## 72               Palestine            - Asia - total
+## 73                    Peru   - Latin America - total
+## 74             Philippines            - Asia - total
+## 75                  Poland           - EU 28 - total
+## 76                Portugal           - EU 28 - total
+## 77                 Romania           - EU 28 - total
+## 78                  Russia - Other countries - total
+## 79                 Senegal - Other countries - total
+## 80                  Serbia - Other countries - total
+## 81               Singapore            - Asia - total
+## 82                Slovakia           - EU 28 - total
+## 83                Slovenia           - EU 28 - total
+## 84             South Korea            - Asia - total
+## 85             Switzerland               Switzerland
+## 86                   Syria            - Asia - total
+## 87 Taiwan (Chinese Taipei)            - Asia - total
+## 88              Tajikistan            - Asia - total
+## 89                Thailand            - Asia - total
+## 90                 Tunisia - Other countries - total
+## 91                  Turkey - Other countries - total
+## 92              Uzbekistan            - Asia - total
+## 93               Venezuela   - Latin America - total
+## 94                 Vietnam            - Asia - total
+## 95              Yugoslavia - Other countries - total
+## 96                Zimbabwe - Other countries - total</code></pre>
+<pre class="r"><code># share of admissions for dubbed movies
+dd %&gt;% filter(group != 'United States') %&gt;% 
+  summarise(share_dubbed = sum(dubbed) / sum(nAdmissions)) %&gt;% head(30)</code></pre>
+<pre><code>##   share_dubbed
+## 1    0.1945287</code></pre>
+<pre class="r"><code>lang &lt;- 'EN'
+
+# translations
+ee &lt;- ddd
+ee$name &lt;- txt[ee$group, lang]
+ee$name &lt;- factor(ee$name, levels = txt[as.character(groups$key), lang])
+ee$varName &lt;- txt[ee$var, lang]
+ee$varName &lt;- factor(ee$varName, levels = txt[vars.ordered, lang])
+ee$gr &lt;- as.numeric(names(vars.ordered)[match(ee$var, vars.ordered)])
+  
+gp &lt;- myBarPlot(ee %&gt;% filter(gr == 1), 
+          base_font = txt['base.font', lang])</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre class="r"><code>gp2 &lt;- myBarPlot(ee %&gt;% filter(gr == 2), 
+          base_font = txt['base.font', lang],
+          labels = function(x) paste0(x,'%'))</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre class="r"><code># myIplot(gp)
+# myIplot(gp2, height_svg = 10)
+#ggiraph(code = print(gp),   fonts = list(sans = &quot;Open Sans Condensed&quot;))
+
+ source &lt;- paste0(
+    txt['source', lang], &quot;: &quot;, 
+    htmlLink(&quot;https://www.pxweb.bfs.admin.ch/Selection.aspx?px_language=en&amp;px_db=px-x-1602010000_200&amp;px_tableid=px-x-1602010000_200%5Cpx-x-1602010000_200.px&amp;px_type=PX&quot;, txt['source.name', lang]), 
+    &quot; | &quot;, htmlLink(&quot;http://www.swissinfo.ch&quot;, 'swissinfo.ch')  )
+  
+  outfile &lt;- paste0(&quot;moviesInSwissCinema_&quot;, lang, &quot;.html&quot;)
+  save_html(
+    tags$html(
+      tags$head(includeHTML(&quot;styles.html&quot;)),
+      tags$body(    
+        h2(txt[&quot;title&quot;, lang]),
+        div(class = &quot;descr&quot;, HTML(paste0(txt[&quot;descr&quot;, lang]))),
+        div(class=&quot;container&quot;, myIplot(gp)),
+        div(class=&quot;container&quot;, myIplot(gp2, height_svg = 10)),
+        div(id = &quot;cite&quot;, HTML(source)),
+        HTML(iframeresizer)  
+      )), file = outfile, libdir = &quot;js&quot;, background = &quot;#efe9e0&quot;
+  )  </code></pre>
+<pre><code>## Warning: package 'gdtools' was built under R version 3.3.2</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_text).</code></pre>
 </div>
 
 

@@ -15,14 +15,15 @@ output:
 ```{r setup, include=FALSE}
 translation.file <- "input/movies in Swiss cinema - Sheet1.csv"
 
-country.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "Switzerland", "United States", "France", "Germany", "United Kingdom")
+# country.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "Switzerland", "United States", "France", "Germany", "United Kingdom")
+country.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "Switzerland", "United States")
 country.check.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "......Switzerland", "......United States")
 
 groups <- data.frame(
   key = c("- Asia - total", "- EU 28 - total", "- Latin America - total", "- Other countries - total", "France", "Germany", "Switzerland", "United Kingdom", "United States"),
   name = c("Asia", "EU 28", "Latin America", "Other countries", "France", "Germany", "Switzerland", "United Kingdom", "United States"),  
   order = c(4, 3, 5, 6, 7, 8, 1, 9, 2),
-  color = c("#ac673e", "#333366", "#666633", "#aa8959", "#336666", "#448888", "#ab3d3f", "#55aaaa", "#3a9736")
+  color = c("#ac673e", "#333366", "#666633", "#336666", "#336666", "#448888", "#ab3d3f", "#55aaaa", "#3a9736")
 )
 groups <- groups[order(groups$order),]
 
@@ -189,18 +190,57 @@ dd <- left_join(left_join(dd, dd2), dd3)
 dd$screeningByFilm <- dd$nScreenings / dd$nFilms
 dd$admissionByScreening <- dd$nAdmissions / dd$nScreenings
 
-dd$share_3d     <- dd$d3 / dd$nAdmissions 
-dd$share_dubbed <- dd$dubbed / dd$nAdmissions
+dd$share_3d     <- (dd$d3 / dd$nAdmissions) * 100
+dd$share_dubbed <- (dd$dubbed / dd$nAdmissions) * 100
 
-dd$share_ani    <- dd$ani / dd$nFilms
-dd$share_doc    <- dd$doc / dd$nFilms
-dd$share_fic    <- dd$fic / dd$nFilms
+dd$share_ani    <- (dd$ani / dd$nFilms) * 100
+dd$share_doc    <- (dd$doc / dd$nFilms) * 100
+dd$share_fic    <- (dd$fic / dd$nFilms) * 100
 
 # get colors and short names
 
 ```
 
-```{r plot}
+```{r plot helpers, include = F}
+myTheme <- function(base_family) {
+  swi_theme(base_family = base_family) + 
+    theme(
+      #panel.ontop = TRUE,
+      panel.grid.major.y=element_line(color="#2b2b2b", linetype="dotted", size=0.03),
+      axis.line.x=element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      panel.background = element_rect(fill = "#efe9e0", color = NA),
+      plot.background = element_rect(fill = "#efe9e0", color = NA),
+      strip.text = element_text(size = 15, hjust = 0, family = base_family, colour = "#404040"),
+      plot.margin=unit(c(0.3, 0.05, 0, -0.6), "cm")
+    ) 
+}
+
+myBarPlot <- function (eee, base_font, fontFactor = 1, ndigits = 0, ...) {
+  ggplot(data = eee, aes(name, value, fill = color)) + 
+    geom_bar_interactive(aes(tooltip = name, data_id = name), stat = "identity") + 
+    facet_wrap(~ varName, scales = "free_y", ncol = 1) +  
+    geom_text(aes(label=round(value, digits = ndigits)), position="dodge", vjust = 1.5, hjust = 0.35, 
+              colour = "white", size = 1.8, family = base_font, alpha = 0.6) + 
+    geom_text(aes(label=name), position=position_fill(), vjust=-0.35, hjust = 0.35, 
+              colour = "white", size = 2, family = base_font) + 
+    scale_fill_identity() + 
+    scale_y_continuous(name = "", ...) + 
+    scale_x_discrete(name = "") +  
+    myTheme(base_family = base_font)
+}
+myIplot <- function(gp, ...) {
+  ggiraph(
+    code = print(gp), 
+    width = 1,
+    fonts = list(sans = "Open Sans Condensed"), ...)  
+}
+
+
+```
+
+```{r prepare data and get some key stats}
 # make data long and drop some columns
 ddd <- dd %>% select(-nAdmissions, -nScreenings, -ani, -doc, -fic, -d3, -dubbed)  %>% 
   tidyr::gather(var, value, -group)
@@ -208,21 +248,19 @@ ddd <- dd %>% select(-nAdmissions, -nScreenings, -ani, -doc, -fic, -d3, -dubbed)
 ddd <- cbind(ddd, groups[match(ddd$group, groups$key),c('name', 'color')])
 ddd$name <- factor(ddd$name, levels = as.character(groups$name))
 
+# share of EU 28 movies 
+ddd %>% filter(var == "nFilms") %>% mutate(share = (value / sum(value)* 100))
 
-myTheme <- function(base_family, title_family) {
-  swi_theme(base_family = base_family, title_family = title_family) + 
-    theme(
-      #panel.ontop = TRUE,
-      panel.grid.major.y=element_line(color="black", linetype="dotted", size=0.2),
-      axis.line.x=element_blank(),
-      axis.text.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      panel.background = element_rect(fill = "#efe9e0", color = NA),
-      plot.background = element_rect(fill = "#efe9e0", color = NA),
-      strip.text = element_text(size = 25, hjust = 0)
-    ) 
-}
+# top animation countries for admissions
+data %>% filter(variable == "Admissions", type == "Animated films") %>% arrange(desc(value))
 
+# share of admissions for dubbed movies
+dd %>% filter(group != 'United States') %>% 
+  summarise(share_dubbed = sum(dubbed) / sum(nAdmissions)) %>% head(30)
+
+```
+
+```{r plot}
 lang <- 'EN'
 
 # translations
@@ -233,15 +271,34 @@ ee$varName <- txt[ee$var, lang]
 ee$varName <- factor(ee$varName, levels = txt[vars.ordered, lang])
 ee$gr <- as.numeric(names(vars.ordered)[match(ee$var, vars.ordered)])
   
-gp <- ggplot(data = ee %>% filter(gr == 1), aes(name, value, fill = color)) + 
-  geom_bar_interactive(stat = "identity") + 
-  facet_wrap(~ varName, scales = "free_y", ncol = 1) +  
-  geom_text(data= filter(ee, var %in% c("nFilms", "admissionByScreening")), aes(label=name), position=position_fill(), vjust=-0.25, colour = "white", size = 2.5) + 
-  scale_fill_identity() + 
-  scale_x_discrete(name = "") +  
-  myTheme(base_family = txt['base.font', lang], title_family = txt["title.font", lang])
+gp <- myBarPlot(ee %>% filter(gr == 1), 
+          base_font = txt['base.font', lang])
+gp2 <- myBarPlot(ee %>% filter(gr == 2), 
+          base_font = txt['base.font', lang],
+          labels = function(x) paste0(x,'%'))
+
+# myIplot(gp)
+# myIplot(gp2, height_svg = 10)
+#ggiraph(code = print(gp),   fonts = list(sans = "Open Sans Condensed"))
+
+ source <- paste0(
+    txt['source', lang], ": ", 
+    htmlLink("https://www.pxweb.bfs.admin.ch/Selection.aspx?px_language=en&px_db=px-x-1602010000_200&px_tableid=px-x-1602010000_200%5Cpx-x-1602010000_200.px&px_type=PX", txt['source.name', lang]), 
+    " | ", htmlLink("http://www.swissinfo.ch", 'swissinfo.ch')  )
   
-
-
+  outfile <- paste0("moviesInSwissCinema_", lang, ".html")
+  save_html(
+    tags$html(
+      tags$head(includeHTML("styles.html")),
+      tags$body(    
+        h2(txt["title", lang]),
+        div(class = "descr", HTML(paste0(txt["descr", lang]))),
+        div(class="container", myIplot(gp)),
+        div(class="container", myIplot(gp2, height_svg = 10)),
+        div(id = "cite", HTML(source)),
+        HTML(iframeresizer)  
+      )), file = outfile, libdir = "js", background = "#efe9e0"
+  )  
+  
 
 ```
