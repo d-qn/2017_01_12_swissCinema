@@ -138,15 +138,29 @@ ddd &lt;- dd %&gt;% select(-nAdmissions, -nScreenings, -ani, -doc, -fic, -d3, -d
 ddd &lt;- cbind(ddd, groups[match(ddd$group, groups$key),c('name', 'color')])
 ddd$name &lt;- factor(ddd$name, levels = as.character(groups$name))
 
+# compute the relative value 
+#ddd %&lt;&gt;% group_by(var) %&gt;% mutate(rVal = value / max(value)) %&gt;% ungroup()
+ddd &lt;- do.call(rbind, by(ddd, ddd$var, function(dddd) {
+  dddd$rVal = dddd$value / max(dddd$value)
+  dddd
+}))
+
 # share of EU 28 movies 
 ddd %&gt;% filter(var == &quot;nFilms&quot;) %&gt;% mutate(share = (value / sum(value)* 100))</code></pre>
-<pre><code>##                       group    var value            name   color     share
-## 1            - Asia - total nFilms   162            Asia #ac673e  4.825737
-## 2           - EU 28 - total nFilms  1518           EU 28 #333366 45.218945
-## 3   - Latin America - total nFilms    74   Latin America #666633  2.204349
-## 4 - Other countries - total nFilms   179 Other countries #336666  5.332142
-## 5               Switzerland nFilms   524     Switzerland #ab3d3f 15.609175
-## 6             United States nFilms   900   United States #3a9736 26.809651</code></pre>
+<pre><code>##                       group    var value            name   color
+## 1            - Asia - total nFilms   162            Asia #ac673e
+## 2           - EU 28 - total nFilms  1518           EU 28 #333366
+## 3   - Latin America - total nFilms    74   Latin America #666633
+## 4 - Other countries - total nFilms   179 Other countries #336666
+## 5               Switzerland nFilms   524     Switzerland #ab3d3f
+## 6             United States nFilms   900   United States #3a9736
+##         rVal     share
+## 1 0.10671937  4.825737
+## 2 1.00000000 45.218945
+## 3 0.04874835  2.204349
+## 4 0.11791831  5.332142
+## 5 0.34519104 15.609175
+## 6 0.59288538 26.809651</code></pre>
 <pre class="r"><code># top animation countries for admissions
 data %&gt;% filter(variable == &quot;Admissions&quot;, type == &quot;Animated films&quot;) %&gt;% arrange(desc(value))</code></pre>
 <pre><code>##      variable           type                    countryOri
@@ -527,10 +541,9 @@ gp3 &lt;- myBarPlot(ee %&gt;% filter(gr == 3),
 <pre><code>## Warning: package 'gdtools' was built under R version 3.3.2</code></pre>
 <pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
 
+## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
 ## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_text).</code></pre>
-<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_text).</code></pre>
 </div>
 
 

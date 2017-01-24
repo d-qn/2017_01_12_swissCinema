@@ -16,7 +16,7 @@ output:
 translation.file <- "input/movies in Swiss cinema - Sheet1.csv"
 annotation.file <- "input/movies in Swiss cinema - annotations.csv"
 
-facet_height <- 2.7
+facet_height <- 2.9
 
 # country.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "Switzerland", "United States", "France", "Germany", "United Kingdom")
 country.sub <- c('- EU 28 - total', '- Other countries - total', '- Asia - total', '- Latin America - total', "Switzerland", "United States")
@@ -219,13 +219,16 @@ myTheme <- function(base_family) {
 }
 
 myBarPlot <- function (eee, base_font, fontFactor = 1, ndigits = 0, annotations = NULL, ...) {
+
   gp <- ggplot(data = eee, aes(name, value, fill = color)) + 
     geom_bar_interactive(aes(tooltip = tooltip, data_id = name), stat = "identity", width = 0.95) + 
     facet_wrap(~ varName, scales = "free_y", ncol = 1) +  
-    geom_text(aes(label=round(value, digits = ndigits)), position="dodge", vjust = 1.5, hjust = 0.37, 
+    geom_text(data = eee %>% filter(rVal > 0.11), 
+              aes(label=round(value, digits = ndigits)), position="dodge", vjust = 1.5, hjust = 0.37, 
               colour = "white", size = 2.3, family = base_font, alpha = 0.6) + 
-    geom_text(aes(label=name), position=position_fill(), vjust=-0.35, hjust = 0.37, 
-              colour = "white", size = 2.8, family = base_font, check_overlap = T) + 
+    geom_text(data = eee %>% filter(rVal >= 0.04), 
+              aes(label=name), position=position_fill(), vjust=-0.2, hjust = 0.37, 
+              colour = "white", size = 2.7, family = base_font, check_overlap = T) + 
     scale_fill_identity() + 
     scale_colour_identity() + 
     scale_y_continuous(name = "", ...) + 
@@ -256,6 +259,13 @@ ddd <- dd %>% select(-nAdmissions, -nScreenings, -ani, -doc, -fic, -d3, -dubbed)
 
 ddd <- cbind(ddd, groups[match(ddd$group, groups$key),c('name', 'color')])
 ddd$name <- factor(ddd$name, levels = as.character(groups$name))
+
+# compute the relative value 
+#ddd %<>% group_by(var) %>% mutate(rVal = value / max(value)) %>% ungroup()
+ddd <- do.call(rbind, by(ddd, ddd$var, function(dddd) {
+  dddd$rVal = dddd$value / max(dddd$value)
+  dddd
+}))
 
 # share of EU 28 movies 
 ddd %>% filter(var == "nFilms") %>% mutate(share = (value / sum(value)* 100))
