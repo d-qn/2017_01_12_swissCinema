@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Swiss cinemas"
 author: "Duc-Quang Nguyen | swissinfo.ch"
 date: " 2016"
 output: 
@@ -245,7 +245,8 @@ myIplot <- function(gp, ...) {
   ggiraph(
     code = print(gp), 
     width = 1,
-    tooltip_offx = 1,
+    tooltip_offx = 0.2,
+    tooltip_extra_css = "background-color:#333333;color:white;padding:7px;border-radius:8px 16px 8px 16px;",
     hover_css = "fill-opacity:.3;cursor:pointer;",
     fonts = list(sans = "Open Sans Condensed"), ...)  
 }
@@ -276,6 +277,14 @@ data %>% filter(variable == "Admissions", type == "Animated films") %>% arrange(
 # share of admissions for dubbed movies
 dd %>% filter(group != 'United States') %>% 
   summarise(share_dubbed = sum(dubbed) / sum(nAdmissions)) %>% head(30)
+
+# share of screening for dubbed movies
+tmps <- data %>% filter(variable == "Number of screenings", type == "Dubbed version") %>% 
+  mutate(share_dubbedScreening = value / tot_byCountry_film) 
+tmps %>% filter(iso2c == 'US')
+tmps %>% filter(iso2c != 'US') %>% summarise(sum(value) / sum(tot_byCountry_film))
+
+
 
 ```
 
