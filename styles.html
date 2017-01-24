@@ -1,19 +1,26 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700,300italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 
 body, h1, h2, h3, h4, h5, h6, .descr, td, table {
    text-rendering: optimizeLegibility;
    font-family: 'Open Sans Condensed', sans-serif;
-   font-size: 21px;
-   margin:5px 4px 1px 1px;
+   font-size: 20px;
+   font-size-adjust:0.5;
+   margin:1px 4px 1px 1px;
 }
+
+* {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; 
+  }
 
 .container {
     width: 100%;
     margin-top: 0px;
-    margin-bottom: 2px;
-    border-radius: 15px;
+    margin-bottom: 0px;
+    border-radius: 8px;
     background-color:#F7F7F7;
 }
 svg {
@@ -55,8 +62,11 @@ svg {
  color: #666666;
  max-width:100%;
  margin-left:1%;
+   margin-bottom:3px;
  padding-bottom: 4px;
- padding-top: 2px;
+ padding-top: 0px;
+ line-height: 100%;
+    text-align: center;
 }
 
 h1 {
@@ -64,12 +74,15 @@ h1 {
 }
 
 h2 {
-   font-size:1.3em;
+   font-size:1.45em;
    line-height: 105%;
    font-weight: 700;
    max-width:99%;
    margin-left:1%;
-   color: #262626;
+   margin-top:5px;
+   margin-bottom:2px;
+   color: #4b1b1c;
+   text-align: center;
 }
 
 h3 {
@@ -85,7 +98,6 @@ h4 {
   margin-right: 0px;
   margin-top: 0px;
   padding-left:4px;
-  background: #cccccc;
 }
 
 h5 {
@@ -110,11 +122,10 @@ a, a:visited {
   text-decoration: underline;
 }
 
-@media only screen and (max-width: 600px) {
-    body {
-           font-size: 14px;
-    }
-
+@media screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
 }
 
 </style>

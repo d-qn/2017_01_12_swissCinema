@@ -455,12 +455,17 @@ ee$varName &lt;- txt[ee$var, lang]
 ee$varName &lt;- factor(ee$varName, levels = txt[vars.ordered, lang])
 ee$gr &lt;- as.numeric(names(vars.ordered)[match(ee$var, vars.ordered)])
 
+ee$tooltip &lt;-  paste0(
+    '&lt;h4&gt;', as.character(ee$name), '&lt;/h4&gt;&lt;div class = &quot;tp&quot;&gt; ', 
+    round(ee$value ,1), '&lt;/div&gt;'
+)
+
 # annotations 
 anno &lt;- annot
 anno$label &lt;- txt[anno$code, lang]
 anno$varName &lt;- txt[gsub(&quot;^annot.&quot;, &quot;&quot;, anno$code), lang]
 anno$varName &lt;- factor(anno$varName,  levels = txt[vars.ordered, lang])
-anno$color &lt;- &quot;#262626&quot;
+anno$color &lt;- &quot;black&quot;
 
 # sting wrap
 for(i in 1:nrow(anno)) {
@@ -482,6 +487,12 @@ gp2 &lt;- myBarPlot(ee %&gt;% filter(gr == 2),
           annotations = anno %&gt;% filter(code %in% keys),
           labels = function(x) paste0(x,'%'))</code></pre>
 <pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre class="r"><code>keys &lt;- paste0(&quot;annot.&quot;, ee %&gt;% filter(gr == 3) %&gt;% select(var) %&gt;% unlist(use.names = F) %&gt;% unique())
+gp3 &lt;- myBarPlot(ee %&gt;% filter(gr == 3), 
+          base_font = txt['base.font', lang],
+          annotations = anno %&gt;% filter(code %in% keys),
+          labels = function(x) paste0(x,'%'))</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
 <pre class="r"><code># myIplot(gp)
 # myIplot(gp2, height_svg = 10)
 #ggiraph(code = print(gp),   fonts = list(sans = &quot;Open Sans Condensed&quot;))
@@ -489,6 +500,7 @@ gp2 &lt;- myBarPlot(ee %&gt;% filter(gr == 2),
  source &lt;- paste0(
     txt['source', lang], &quot;: &quot;, 
     htmlLink(&quot;https://www.pxweb.bfs.admin.ch/Selection.aspx?px_language=en&amp;px_db=px-x-1602010000_200&amp;px_tableid=px-x-1602010000_200%5Cpx-x-1602010000_200.px&amp;px_type=PX&quot;, txt['source.name', lang]), 
+    &quot; | &quot;, htmlLink(&quot;https://twitter.com/duc_qn&quot;, '@duc_qn'),
     &quot; | &quot;, htmlLink(&quot;http://www.swissinfo.ch&quot;, 'swissinfo.ch')  )
   
   outfile &lt;- paste0(&quot;moviesInSwissCinema_&quot;, lang, &quot;.html&quot;)
@@ -498,20 +510,27 @@ gp2 &lt;- myBarPlot(ee %&gt;% filter(gr == 2),
       tags$body(    
         h2(txt[&quot;title&quot;, lang]),
         div(class = &quot;descr&quot;, HTML(paste0(txt[&quot;descr&quot;, lang]))),
-        div(class=&quot;container&quot;, myIplot(gp, height_svg = 9)),
+        div(class=&quot;container&quot;, myIplot(gp, height_svg = facet_height * 3)),
+                HTML(&quot;&lt;br&gt;&quot;),
         h2(HTML(txt[&quot;title.b&quot;, lang])),
         div(class = &quot;descr&quot;, HTML(paste0(txt[&quot;descr2&quot;, lang]))),
-        div(class=&quot;container&quot;, myIplot(gp2, height_svg = 12)),
+        div(class=&quot;container&quot;, myIplot(gp2, height_svg = facet_height * 3)),
+        HTML(&quot;&lt;br&gt;&quot;),
+        h2(HTML(txt[&quot;title.c&quot;, lang])),
+        div(class = &quot;descr&quot;, HTML(paste0(txt[&quot;descr2&quot;, lang]))),
+        div(class=&quot;container&quot;, myIplot(gp3, height_svg = facet_height * 2)),
         div(id = &quot;cite&quot;, HTML(source)),
         div(id = &quot;footer&quot;, HTML(txt[&quot;footer&quot;, lang])),
         HTML(iframeresizer)  
-      )), file = outfile, libdir = &quot;js&quot; #, background = &quot;#efe9e0&quot;
+      )), file = outfile, libdir = &quot;js&quot;, background = &quot;#e6e6e6&quot;
   )  </code></pre>
 <pre><code>## Warning: package 'gdtools' was built under R version 3.3.2</code></pre>
 <pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
 
 ## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values (geom_text).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text).</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text).</code></pre>
 </div>
 
 
