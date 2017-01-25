@@ -26,7 +26,8 @@ groups <- data.frame(
   key = c("- Asia - total", "- EU 28 - total", "- Latin America - total", "- Other countries - total", "France", "Germany", "Switzerland", "United Kingdom", "United States"),
   name = c("Asia", "EU 28", "Latin America", "Other countries", "France", "Germany", "Switzerland", "United Kingdom", "United States"),  
   order = c(4, 3, 5, 6, 7, 8, 1, 9, 2),
-  color = c("#ac673e", "#333366", "#666633", "#336666", "#336666", "#448888", "#ab3d3f", "#55aaaa", "#3a9736")
+  color = c("#ac673e", "#333366", "#666633", "darkgrey", "#336666", "#448888", "#ab3d3f", "#55aaaa", "#336666")
+  #color = c('#448888','#407f7f','#3b7776','#376e6e','#336565','#2e5c5c','#2a5454','#264d4d','#224444')
 )
 groups <- groups[order(groups$order),]
 
@@ -327,9 +328,10 @@ gp <- myBarPlot(
 
 keys <- paste0("annot.", ee %>% filter(gr == 2) %>% select(var) %>% unlist(use.names = F) %>% unique())
 gp2 <- myBarPlot(ee %>% filter(gr == 2), 
-          base_font = txt['base.font', lang],
-          annotations = anno %>% filter(code %in% keys),
-          labels = function(x) paste0(x,'%'))
+                 base_font = txt['base.font', lang],
+                 annotations = anno %>% filter(code %in% keys),
+                 labels = function(x) paste0(x,'%')
+                 )
 
 
 keys <- paste0("annot.", ee %>% filter(gr == 3) %>% select(var) %>% unlist(use.names = F) %>% unique())
@@ -357,11 +359,9 @@ gp3 <- myBarPlot(ee %>% filter(gr == 3),
         h2(txt["title", lang]),
         div(class = "descr", HTML(paste0(txt["descr", lang]))),
         div(class="container", myIplot(gp, height_svg = facet_height * 3)),
-                HTML("<br>"),
         h2(HTML(txt["title.b", lang])),
         div(class = "descr", HTML(paste0(txt["descr2", lang]))),
         div(class="container", myIplot(gp2, height_svg = facet_height * 3)),
-        HTML("<br>"),
         h2(HTML(txt["title.c", lang])),
         div(class = "descr", HTML(paste0(txt["descr2", lang]))),
         div(class="container", myIplot(gp3, height_svg = facet_height * 2)),

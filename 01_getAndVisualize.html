@@ -150,13 +150,13 @@ ddd &lt;- do.call(rbind, by(ddd, ddd$var, function(dddd) {
 
 # share of EU 28 movies 
 ddd %&gt;% filter(var == &quot;nFilms&quot;) %&gt;% mutate(share = (value / sum(value)* 100))</code></pre>
-<pre><code>##                       group    var value            name   color
-## 1            - Asia - total nFilms   162            Asia #ac673e
-## 2           - EU 28 - total nFilms  1518           EU 28 #333366
-## 3   - Latin America - total nFilms    74   Latin America #666633
-## 4 - Other countries - total nFilms   179 Other countries #336666
-## 5               Switzerland nFilms   524     Switzerland #ab3d3f
-## 6             United States nFilms   900   United States #3a9736
+<pre><code>##                       group    var value            name    color
+## 1            - Asia - total nFilms   162            Asia  #ac673e
+## 2           - EU 28 - total nFilms  1518           EU 28  #333366
+## 3   - Latin America - total nFilms    74   Latin America  #666633
+## 4 - Other countries - total nFilms   179 Other countries darkgrey
+## 5               Switzerland nFilms   524     Switzerland  #ab3d3f
+## 6             United States nFilms   900   United States  #336666
 ##         rVal     share
 ## 1 0.10671937  4.825737
 ## 2 1.00000000 45.218945
@@ -541,11 +541,9 @@ gp3 &lt;- myBarPlot(ee %&gt;% filter(gr == 3),
         h2(txt[&quot;title&quot;, lang]),
         div(class = &quot;descr&quot;, HTML(paste0(txt[&quot;descr&quot;, lang]))),
         div(class=&quot;container&quot;, myIplot(gp, height_svg = facet_height * 3)),
-                HTML(&quot;&lt;br&gt;&quot;),
         h2(HTML(txt[&quot;title.b&quot;, lang])),
         div(class = &quot;descr&quot;, HTML(paste0(txt[&quot;descr2&quot;, lang]))),
         div(class=&quot;container&quot;, myIplot(gp2, height_svg = facet_height * 3)),
-        HTML(&quot;&lt;br&gt;&quot;),
         h2(HTML(txt[&quot;title.c&quot;, lang])),
         div(class = &quot;descr&quot;, HTML(paste0(txt[&quot;descr2&quot;, lang]))),
         div(class=&quot;container&quot;, myIplot(gp3, height_svg = facet_height * 2)),
