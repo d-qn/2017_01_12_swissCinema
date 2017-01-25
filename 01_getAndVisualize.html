@@ -164,6 +164,19 @@ ddd %&gt;% filter(var == &quot;nFilms&quot;) %&gt;% mutate(share = (value / sum(
 ## 4 0.11791831  5.332142
 ## 5 0.34519104 15.609175
 ## 6 0.59288538 26.809651</code></pre>
+<pre class="r"><code># share of admissions by country vs all admissions
+tmpa &lt;- dd
+tmpa$shareAdm &lt;- tmpa$nAdmissions / sum(tmpa$nAdmissions)
+tmpa %&gt;% select(group, shareAdm, nAdmissions) %&gt;% arrange(desc(shareAdm))</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##                       group    shareAdm nAdmissions
+##                       &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+## 1             United States 0.637690963    17439788
+## 2           - EU 28 - total 0.269769337     7377743
+## 3               Switzerland 0.051347362     1404265
+## 4 - Other countries - total 0.025977008      710428
+## 5            - Asia - total 0.010537350      288179
+## 6   - Latin America - total 0.004677981      127935</code></pre>
 <pre class="r"><code># top animation countries for admissions
 data %&gt;% filter(variable == &quot;Admissions&quot;, type == &quot;Animated films&quot;) %&gt;% arrange(desc(value))</code></pre>
 <pre><code>##      variable           type                    countryOri
@@ -477,57 +490,73 @@ tmps %&gt;% filter(iso2c == 'US')</code></pre>
 ## 1                          0.2081575</code></pre>
 <pre class="r"><code>lang &lt;- 'EN'
 
-## translations
-ee &lt;- ddd
-ee$name &lt;- txt[ee$group, lang]
-ee$name &lt;- factor(ee$name, levels = txt[as.character(groups$key), lang])
-ee$varName &lt;- txt[ee$var, lang]
-ee$varName &lt;- factor(ee$varName, levels = txt[vars.ordered, lang])
-ee$gr &lt;- as.numeric(names(vars.ordered)[match(ee$var, vars.ordered)])
-
-ee$tooltip &lt;-  paste0(
+for(lang in colnames(txt)) {
+  
+  ## translations
+  ee &lt;- ddd
+  ee$name &lt;- txt[ee$group, lang]
+  ee$name &lt;- factor(ee$name, levels = txt[as.character(groups$key), lang])
+  ee$varName &lt;- txt[ee$var, lang]
+  ee$varName &lt;- factor(ee$varName, levels = txt[vars.ordered, lang])
+  ee$gr &lt;- as.numeric(names(vars.ordered)[match(ee$var, vars.ordered)])
+  
+  ee$tooltip &lt;-  paste0(
     '&lt;h4&gt;', as.character(ee$name), '&lt;/h4&gt;&lt;div class = &quot;tp&quot;&gt; ', 
-    round(ee$value ,1), '&lt;/div&gt;'
-)
-
-# annotations 
-anno &lt;- annot
-anno$label &lt;- txt[anno$code, lang]
-anno$varName &lt;- txt[gsub(&quot;^annot.&quot;, &quot;&quot;, anno$code), lang]
-anno$varName &lt;- factor(anno$varName,  levels = txt[vars.ordered, lang])
-anno$color &lt;- &quot;black&quot;
-
-# sting wrap
-for(i in 1:nrow(anno)) {
-  anno[i, 'label'] &lt;- paste0(strwrap(anno[i, 'label'], width = anno[i, &quot;width&quot;]), collapse = &quot;\n&quot;)
-}
-
-
-## Generate static charts 
-keys &lt;- paste0(&quot;annot.&quot;, ee %&gt;% filter(gr == 1) %&gt;% select(var) %&gt;% unlist(use.names = F) %&gt;% unique())
-gp &lt;- myBarPlot(
-  ee %&gt;% filter(gr == 1), 
-  base_font = txt['base.font', lang], 
-  annotations = anno %&gt;% filter(code %in% keys)
-)</code></pre>
-<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
-<pre class="r"><code>keys &lt;- paste0(&quot;annot.&quot;, ee %&gt;% filter(gr == 2) %&gt;% select(var) %&gt;% unlist(use.names = F) %&gt;% unique())
-gp2 &lt;- myBarPlot(ee %&gt;% filter(gr == 2), 
-          base_font = txt['base.font', lang],
-          annotations = anno %&gt;% filter(code %in% keys),
-          labels = function(x) paste0(x,'%'))</code></pre>
-<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
-<pre class="r"><code>keys &lt;- paste0(&quot;annot.&quot;, ee %&gt;% filter(gr == 3) %&gt;% select(var) %&gt;% unlist(use.names = F) %&gt;% unique())
-gp3 &lt;- myBarPlot(ee %&gt;% filter(gr == 3), 
-          base_font = txt['base.font', lang],
-          annotations = anno %&gt;% filter(code %in% keys),
-          labels = function(x) paste0(x,'%'))</code></pre>
-<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
-<pre class="r"><code># myIplot(gp)
-# myIplot(gp2, height_svg = 10)
-#ggiraph(code = print(gp),   fonts = list(sans = &quot;Open Sans Condensed&quot;))
-
- source &lt;- paste0(
+    round(ee$value ,0), '&lt;/div&gt;'
+  )
+  
+  # annotations 
+  anno &lt;- annot
+  anno$label &lt;- cleanTranslation(txt[anno$code, lang])
+  anno$varName &lt;- txt[gsub(&quot;^annot.&quot;, &quot;&quot;, anno$code), lang]
+  anno$varName &lt;- factor(anno$varName,  levels = txt[vars.ordered, lang])
+  anno$color &lt;- &quot;black&quot;
+  
+  # sting wrap
+  for(i in 1:nrow(anno)) {
+    if (lang %in% c('ZH','JA')) {
+      sLength &lt;- nchar(anno[i, 'label'])
+      w &lt;-  round(anno[i, &quot;width&quot;] * as.numeric(txt['strwrapFactor', lang])  )
+      st &lt;- seq(1, sLength, w)
+      en &lt;- seq(from = w, by = w, length.out = length(st))
+      anno[i, 'label'] &lt;- paste0(substring(anno[i, 'label'], st, en), collapse = &quot;\n&quot;)
+    } else {
+      anno[i, 'label'] &lt;- paste0(strwrap(anno[i, 'label'], width = anno[i, &quot;width&quot;]), collapse = &quot;\n&quot;)      
+    }
+  }
+  
+  ## Generate static charts 
+  keys &lt;- paste0(&quot;annot.&quot;, ee %&gt;% filter(gr == 1) %&gt;% select(var) %&gt;% unlist(use.names = F) %&gt;% unique())
+  gp &lt;- myBarPlot(
+    ee %&gt;% filter(gr == 1), 
+    base_font = txt['base.font', lang], 
+    fontFactor = as.numeric(txt['fontFactor', lang]),
+    annotations = anno %&gt;% filter(code %in% keys),
+    label.hjust = as.numeric(txt['label.hjust', lang])
+  )
+  
+  keys &lt;- paste0(&quot;annot.&quot;, ee %&gt;% filter(gr == 2) %&gt;% select(var) %&gt;% unlist(use.names = F) %&gt;% unique())
+  gp2 &lt;- myBarPlot(ee %&gt;% filter(gr == 2), 
+                   base_font = txt['base.font', lang],
+                   fontFactor = as.numeric(txt['fontFactor', lang]),
+                   annotations = anno %&gt;% filter(code %in% keys),
+                   label.hjust = as.numeric(txt['label.hjust', lang]),
+                   labels = function(x) paste0(x,'%')
+  )
+  
+  keys &lt;- paste0(&quot;annot.&quot;, ee %&gt;% filter(gr == 3) %&gt;% select(var) %&gt;% unlist(use.names = F) %&gt;% unique())
+  gp3 &lt;- myBarPlot(ee %&gt;% filter(gr == 3), 
+                   base_font = txt['base.font', lang],
+                   fontFactor = as.numeric(txt['fontFactor', lang]),
+                   annotations = anno %&gt;% filter(code %in% keys),
+                   label.hjust = as.numeric(txt['label.hjust', lang]),
+                   labels = function(x) paste0(x,'%'))
+  
+  # myIplot(gp)
+  # myIplot(gp2, height_svg = 10)
+  #ggiraph(code = print(gp),   fonts = list(sans = &quot;Open Sans Condensed&quot;))
+  
+  source &lt;- paste0(
     txt['source', lang], &quot;: &quot;, 
     htmlLink(&quot;https://www.pxweb.bfs.admin.ch/Selection.aspx?px_language=en&amp;px_db=px-x-1602010000_200&amp;px_tableid=px-x-1602010000_200%5Cpx-x-1602010000_200.px&amp;px_type=PX&quot;, txt['source.name', lang]), 
     &quot; | &quot;, htmlLink(&quot;https://twitter.com/duc_qn&quot;, '@duc_qn'),
@@ -551,8 +580,74 @@ gp3 &lt;- myBarPlot(ee %&gt;% filter(gr == 3),
         div(id = &quot;footer&quot;, HTML(txt[&quot;footer&quot;, lang])),
         HTML(iframeresizer)  
       )), file = outfile, libdir = &quot;js&quot;, background = &quot;#e6e6e6&quot;
-  )  </code></pre>
+  )  
+}</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
 <pre><code>## Warning: package 'gdtools' was built under R version 3.3.2</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
+<pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`
+
+## Warning: Width not defined. Set with `position_dodge(width = ?)`</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id
+
+## Warning: Ignoring unknown aesthetics: tooltip, data_id</code></pre>
 <pre><code>## Warning: Width not defined. Set with `position_dodge(width = ?)`
 
 ## Warning: Width not defined. Set with `position_dodge(width = ?)`

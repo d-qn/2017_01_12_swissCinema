@@ -1,31 +1,63 @@
 code,EN,FR,DE,IT,PT,AR,RU,ES,JA,ZH
-title,What movies do the Swiss like?,,,,,,,,,
-descr,Swiss cinemas' figures in 2014 and 2015*. By movies' country or region of origin,,,,,,,,,
-footer,"* Excluding film festivals, open-air cinema, cinema clubs and adult cinemas figures. The three main countries of origin for EU-28 movies are France, Germany and United Kingdom",,,,,,,,,
-title.b,What genre of movies has the most success?,,,,,,,,,
-descr2,Share out of all admissions by movies' country or region of origin ,,,,,,,,,
-title.c,What type of screening is the most popular? ,,,,,,,,,
-Switzerland,Switzerland,,,,,,,,,
-United States,United States,,,,,,,,,
-- EU 28 - total,EU 28,,,,,,,,,
-- Asia - total,Asia,,,,,,,,,
-- Latin America - total,Latin America,,,,,,,,,
-- Other countries - total,Other countries,,,,,,,,,
-nFilms,Number of movies from,,,,,,,,,
-screeningByFilm,Screening per movie,,,,,,,,,
-admissionByScreening,Admissions per screening,,,,,,,,,
-share_3d,3D movies,,,,,,,,,
-share_dubbed,Dubbed movies,,,,,,,,,
-share_ani,Animated movies,,,,,,,,,
-share_doc,Documentaries,,,,,,,,,
-share_fic,Fiction movies,,,,,,,,,
-annot.nFilms,"A large diversity of European movies are shown in Swiss cinemas. Movies from the EU-28 accounts for 45% of all movies, Swiss films 16%",,,,,,,,,
-annot.screeningByFilm,"... but in terms of screening, american films are far ahead. An american movie is on average shown more than 700 times in cinemas!",,,,,,,,,
-annot.admissionByScreening,... but there isn't a large difference in the average number of admissions per screening. Movies from all over the world are nearly as popular as Americans.,,,,,,,,,
-annot.share_doc,Documentary is a cinematographical genre with a long tradition in Switzerland. More than 60% of the admissions for helvetic movies are for documentaries.,,,,,,,,,
-annot.share_ani,"If in absolute terms, admissions for animated films are largely dominated by american productions. A fifth of the admissions for asian movies are for Japanimations",,,,,,,,,
-annot.share_dubbed,"Moviegoers largely watched dubbed American movies. But for movies from other countries, more than 80% of the admissions are for original subtitled films  ",,,,,,,,,
+title,What films do the Swiss like?,Quels films les Suisses aiment-ils?,Welche Filme mögen Schweizer?,Cosa guardano gli svizzeri al cinema? ,,ما هي الأفلام التي يحبها السويسريون؟,,"
+
+¿Qué filmes son los más populares?
+
+",スイスで人気の映画は？,瑞士人最爱看哪些电影？
+descr,Swiss cinemas' figures in 2014 and 2015*. By movies' country or region of origin,"Statistiques du cinéma suisse en 2014 et 2015, par pays ou région de provenance d'un film","Statistiken von Schweizer Kinos 2014 und 2015, nach Herkunft des Filmes","Statistiche sul cinema svizzero 2014 e 2015, per paese o regione di provenienza di un film",,احصاءات السينما السويسرية في عام 2014 و2015*. بحسب الافلام والبلد او المنطقة والأصل.,,"
+
+Datos de 2014 y
+2015. Por país o región de origen.
+
+",スイスの映画館で上映された映画：製作国別（２０１４～１５年）,瑞士2014及2015年度院线数据(根据其制片国家/地区分类)
+title.b,What genre has the most success?,Quel genre rencontre le plus de succès?,Welches Genre ist am erfolgreichsten?,Qual è il genere cinematografico di maggior successo?,,ما نوع الأفلام التي حققت نجاحا أكبر؟,,¿Qué género tiene más éxito?,ジャンル別でみた人気映画の製作国,哪种类型的影片最卖座？
+descr2,Share of total admissions by movies' country or region of origin ,Proportion d'entrées dans les salles de cinéma par pays d'origine du film,Anteil an Kinoeintritten nach Herkunftsland des Filmes,"Proporzione d'entrate nelle sale cinematografiche, per paese d'origine di un film",,حصة الأفلام المقبولة بحسب البلد او المنطقة او الأصل.,,"
+
+Proporción de
+entradas en las salas de cine, por origen del filme.
+
+",鑑賞者数における各国の製作映画の割合（２０１４～１５年）,各种影片所占入场总人次比例(根据制片国家/地区分类)
+title.c,What type of screening is the most popular? ,Quel type de projection rencontre le plus de succès?,Welche Art von Vorführung hat am meisten Erfolg?,Che tipo di proiezione ha più successo?,,ما هي شاشات العرض الاكثر شعبية؟,,"
+
+¿Qué tipo de
+filme es más exitoso?
+
+",上映タイプ別でみた人気映画の製作国,哪种制作加工方式的影片最受欢迎？
+Switzerland,Switzerland,Suisse,Schweiz,Svizzera,,سويسرا,,Suiza,スイス,瑞士
+United States,United States,Etats-Unis,USA,Stati Uniti,,الولايات المتحدة الأمريكية,,Estados Unidos,米国,美国
+- EU 28 - total,EU-28,UE-28,EU-28,EU-28,,بلدان الإتحاد الأوروبي الثماني والعشرين,,Unión Europea-28,EU加盟国,欧盟28个成员国
+- Asia - total,Asia,Asie,Asien,Asia,,آسيا,,Asia,アジア,亚洲
+- Latin America - total,Latin America,Amérique latine,Lateinamerika,America Latina,,أمريكا اللاتينية,,Latinoamérica,ラテンアメリカ,拉丁美洲
+- Other countries - total,Other countries,Autres pays,Andere Länder,Altri paesi,,بلدان آخرى,,Otros países,その他,其他国家
+nFilms,Number of movies from,Nombre de films de,Anzahl Filme aus,Numero di film da,,عدد الأفلام من,,Número de filmes de,上映本数,各国家/地区上映影片数量
+screeningByFilm,Screening per movie,Projections par film,Vorführungen pro Film,Proiezioni per film,,العرض بحسب الأفلام ,,Proyecciones por filme,上映回数,平均每部影片放映场次
+admissionByScreening,Admissions per screening,Entrées par projection,Eintritte pro Vorführung,Entrate per proiezione,,,,Entradas por proyección,入館者数,平均每场放映入场人次
+share_3d,3D movies,Films en 3D,Filme in 3D,Film in 3D,,أفلام ثلاثية الأبعاد,,Filme 3D,3D,3D电影
+share_dubbed,Dubbed movies,Films doublés,Synchronisierte Filme,Film doppiati,,أفلام مدبلجة,,Filme sincronizado,"吹き替え版
+",译制片
+share_ani,Animated movies,Films d'animation,Animationsfilme,Film d'animazione,,أفلام صور متحرّكة,,Filme de animación,アニメーション映画,动画电影
+share_doc,Documentaries,Documentaires,Dokumentarfilme,Documentari,,أفلام وثائقية,,Filme documental,ドキュメンタリー映画,纪录片
+share_fic,Fiction movies,Films de fiction,Spielfilme,Film di finzione,,أفلام روائية,,Filme de ficción,"SF映画
+",科幻电影
+annot.nFilms,"Swiss cinemas show a wide range of European movies. Those from the EU-28 account for 45% of all movies, those from Switzerland 16%.","Parmi tous les films sortis dans les salles de cinéma suisse, 45% proviennent d'un pays de l'UE et 16% de la Suisse.","Schweizer Kinos zeigen eine breite Auswahl europäischer Filme: 45% aller Filme kommen aus EU-Staaten, 16% aus der Schweiz.","Di tutti i film usciti nelle sale cinematografiche svizzere, il 45% proviene da un paese dell'UE e il 16% dalla Svizzera...",,,,"De todos los filmes vistos en los cines de Suiza, el 45% es de la Unión Europea y el 16% de Suiza.",スイスでは欧州連合（EU）加盟国で製作された作品が最も多く上映された。上映作品の４５％がEU加盟国、１６％がスイスで製作されたもの。,"制作出品于欧洲其他国家的电影大量 占据着瑞士院线。其中出品于欧盟28个成员国的影片占 瑞士电影放映总额的45%, 而瑞士本土影片仅占16%。"
+annot.screeningByFilm,"... but in terms of screening, US films are far ahead. An American movie is shown more than 700 times in Swiss cinemas!","Mais en termes de projections, ce sont les productions hollywoodiennes qui dominent. Un film américain est en moyenne projeté plus de 700 fois!",Aber hinsichtlich der Anzahl Vorstellungen dominieren US-Produktionen. Ein amerikanischer Film wird durchschnittlich mehr als 700 Mal gezeigt.,"... Per quanto riguarda le proiezioni, tuttavia, a dominare sono gli Stati Uniti. In media un film americano viene proiettato più di 700 volte!",,,,"Pero en cuanto al número de proyecciones, el dominio es de EEUU. En promedio un filme estadounidense se proyecta 700 veces.",一作品の平均上映回数では、米国が突出して多い。その数は７００回を上回る。,"但谈及放映场次, 美国制作出品的影 片遥遥领先于别国。在瑞士电影院里, 平均每部美国电影的放映次数会达到逾700次之多。"
+annot.admissionByScreening,... but there isn't a big difference in the average number of admissions per screening. Movies from all over the world are nearly as popular as those from the US.,Il n'y a pas de grande différence en ce qui concerne le nombre de spectateurs moyen par film.,Es gibt keine grossen Unterschiede hinsichtlich der durchschnittlichen Zuschauerzahl pro Vorstellung.,"... E per ogni proiezione di un film svizzero o europeo, in sala ci sono in media 22 spettatori, contro 28 per un film ""made in USA""",,,,Un promedio de 22 espectadores en una sala de cine miran un filme suizo o europeo y 28 para los filmes de EEUU.,一回の上映に対する平均鑑賞者数では、製作国別で大きな差はない。,"但在平均每场放映的入场人次上,各国/地区出 品的电影并无显著差异。无论哪个国家的电影, 在瑞士电影院里受欢迎的程度可谓不分伯仲、势均力敌。"
+annot.share_doc,Documentaries have a long tradition in Switzerland. More than 60% of the admissions for Swiss movies are for documentaries.,Les films documentaires ont une longue tradition en Suisse. Ils représentent plus de 60% de toutes les entrées des films suisses.,Dokumentarfilme haben in der Schweiz eine lange Tradition. Mehr als 60% der Schweizer Produktionen sind Dokumentarfilme.,I documentari hanno una lunga tradizione in Svizzera e si sono accaparrati il 60% delle entrate di tutti i film elvetici usciti in sala.,,,,"Los documentales tienen una gran tradición en Suiza, con más del 60% del total de obras.",スイスでは昔からドキュメンタリー映画が人気。鑑賞者の６０％以上がドキュメンタリー映画を見ている。,纪录片在瑞士可谓历史悠久，源远流长。在瑞士所有电影类型的入场总人次中，逾六成观众的选择都是纪录片。
+annot.share_ani,"While in absolute terms admissions for animated films are dominated by US productions, a fifth of the admissions for Asian movies are for Japanimations.","Si en chiffres absolus, les films d'animation qui connaissent le plus grand succès viennent des Etats-Unis, un cinquième des entrées pour les films asiatiques concerne des films d'animation japonais.","In absoluten Zahlen kommen die erfolgreichsten Animationsfilme aus den USA, aber ein Fünftel der in der Schweiz gezeigten asiatischen Filme sind japanische Zeichentrickfilme.","Se in cifre assolute, i film d'animazione di maggior successo provengono dagli Stati Uniti, quelli giapponesi rappresentano un quinto delle entrate registrate per tutti i film asiatici.",,,,"En cifras abosultas, las aminaciones de mayor éxito provienen de EEUU. las animaciones japonesas representan una quinta parte de las entradas de todos los filmes asiáticos vistos en Suiza.","
+
+スイスで上映されたアニメーション映画のうち、５本中１本は日本の作品。
+
+",尽管从全球观影人数上来看，美国出品的动画电影独树一帜，占据了绝对优势，但在瑞士院线里，亚洲动画电影-尤其是日本动 画片占据了瑞士入场人次近20%。
+annot.share_dubbed,"Moviegoers mostly watch dubbed US movies, a choice largely based on supply: 76% of screenings of US movies are dubbed, compared with 20% for movies from the rest of the world. ","En Suisse, 76% des films américains sont diffusés dans leur version doublée, alors que les films en provenance d'autres pays sont projetés presque exclusivement dans leur langue originale. ","Kinogänger schauen am häufigsten synchronisierte US-Filme, was mit dem Angebot zusammenhängt: 76% der amerikanischen Filme sind synchronisiert, während es bei anderen Filmen nur 20% sind.","In Svizzera, ¾ del pubblico guarda i film americani doppiati. Una scelta determinata però anche dall’offerta: il 76% delle proiezioni USA sono versioni doppiate, mentre i film provenienti da altri paesi sono presentati quasi esclusivamente in lingua originale. ",,,,"En Suiza,  ¾ partes del público mira filmes de EEUU doblados, lo que depende de la oferta: 76% de los filmes de ese país son sincronizados, mientras que en el caso de filmes de otro origen solo ocurren con el 20%.","
+
+鑑賞者数のうち７６％が米国映画の吹き替え版を見ている。それには吹き替え版の映画が最も多いのが米国の映画という、配給側の事情も反映している。
+
+","瑞士的电影发烧友最常看的就是美国译制片。瑞士电影院里上映的美国电影中, 76%都是经过了瑞士官方语言配音的译制片, 其余则是纯英语对白。而在瑞士放映的其他国家/地区制作的电影，仅有20%左右会经过配音再加工的处理。"
 source,Source,source,Quelle,Fonte,fonte,المصدر,Источник,Fuente,出典,来源
-source.name,Federal Statistical Office,,,,,,,,,
+source.name,Federal Statistical Office,Office fédéral de la statistique,Bundesamt für Statistik,Ufficio federale di statistica,,,,Oficina Federal de Estadísticas,連邦統計局,瑞士联邦统计局
 code,Code,code,Code,Codice,código,الرمز,Код,código,コード,代码
+footer,"* Excluding film festivals, open-air cinema, cinema clubs and adult cinemas. The three main countries of origin for EU-28 movies are France, Germany and Britain","* Excepté les festivals, les open-air, les ciné-clubs et les films pour adultes. Les trois principaux pays de provenance des films européens sont la France, l'Allemagne et la Grande-Bretagne","Ausgenommen Filmfestivals, Openair-Kinos, Kinoclubs und Sexkinos. Die meisten europäischen Filme kommen aus Frankreich, Deutschland und Grossbritannien","Le statitiche non includono le entrate registrate nei festival, cine-club e cinema per adulti. I tre principali paesi di provenienza dei film europei sono Francia, Germania e Gran Bretagna.",,,,"Las estadísticas no incluyen las entradas registradas en los festivales de cine, cineclubes o cine para adultos. Los principales países de origen de los filmes europeos son Francia, Alemania y Gran Bretaña.",欧州諸国の中で最も映画の製作本数が多かった国は、フランス、ドイツ、英国。統計には、映画祭、野外上映会、自主上映、成人映画館で上映された作品は含まれていない。,数据统计来源未涵盖电影节、露天电影院、电影俱乐部及成人电影院。欧盟28个成员国的相关数据主要采集自法国、德国和英国。
 base.font,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,OpenSans-CondensedLight,PingFang TC Thin,PingFang TC Thin
+fontFactor,1,1,1,1,1,1,1,1,0.83,0.9
+strwrapFactor,1,1,1,1,1,1,1,1,0.37,0.35
+label.hjust,0.37,0.37,0.37,0.37,0.37,0.37,0.37,0.37,0.6,0.65
